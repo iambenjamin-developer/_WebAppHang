@@ -1,4 +1,5 @@
 using _WebAppHang.Extensions;
+using _WebAppHang.Services;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +37,8 @@ namespace _WebAppHang
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "_WebAppHang", Version = "v1" });
             });
+
+            services.AddScoped<IGuidService, GuidService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
