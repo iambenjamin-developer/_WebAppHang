@@ -65,6 +65,8 @@ namespace _WebAppHang
 
 
             backgroundJobClient.Enqueue(() => Console.WriteLine("Hola desde Hangfire"));
+
+            backgroundJobClient.Schedule(() => Console.WriteLine("Tarea programada"), TimeSpan.FromSeconds(30));
         }
     }
 }
