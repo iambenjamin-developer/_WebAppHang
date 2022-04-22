@@ -57,7 +57,11 @@ namespace _WebAppHang
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapHangfireDashboard();
             });
+
+            app.UseHangfireDashboard();
         }
     }
 }
