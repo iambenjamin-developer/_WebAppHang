@@ -17,15 +17,13 @@ namespace _WebAppHang.Controllers
         private readonly IGuidService _guidService;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IRecurringJobManager _recurringJobManager;
-        private readonly IServiceProvider _serviceProvider;
 
         public ValuesController(IGuidService guidService,
-            IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
+            IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager)
         {
             _guidService = guidService;
             _backgroundJobClient = backgroundJobClient;
             _recurringJobManager = recurringJobManager;
-            _serviceProvider = serviceProvider;
         }
 
 
@@ -33,18 +31,28 @@ namespace _WebAppHang.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            ProgramarTarea();
-
+            ProgramarTareaRecurrente();
+            ProgramarEjecucionDeTareaUnaSolaVez();
+            MandarTareaALaColaParaEjecutarYa();
             return Ok("Empezo la ejecucion jojo");
         }
-        private void ProgramarTarea()
+        private void ProgramarTareaRecurrente()
         {
             _recurringJobManager.AddOrUpdate("Esto correra cada 1 minuto desde el controller value",
                                     () => _guidService.GetRandomIdentifier(),
                                     Cron.Minutely);
         }
 
+        private void ProgramarEjecucionDeTareaUnaSolaVez()
+        {
+            _backgroundJobClient.Schedule(() => _guidService.GetRandomIdentifier(),
+                                            TimeSpan.FromSeconds(45));
+        }
 
+        private void MandarTareaALaColaParaEjecutarYa()
+        {
+            _backgroundJobClient.Enqueue(() => _guidService.GetRandomIdentifier());
+        }
         /*
         backgroundJobClient.Enqueue(() => Console.WriteLine("Hola desde Hangfire"));
 
