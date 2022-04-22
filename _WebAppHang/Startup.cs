@@ -43,7 +43,7 @@ namespace _WebAppHang
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-                                IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager)
+                                IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -67,7 +67,7 @@ namespace _WebAppHang
 
             app.UseHangfireDashboard();
 
-
+            /*
             backgroundJobClient.Enqueue(() => Console.WriteLine("Hola desde Hangfire"));
 
             backgroundJobClient.Schedule(() => Console.WriteLine("Tarea programada"), TimeSpan.FromSeconds(30));
@@ -75,6 +75,14 @@ namespace _WebAppHang
             recurringJobManager.AddOrUpdate("Esto correra cada 1 minuto",
                                             () => Console.WriteLine("Esto es una tarea recurrente"),
                                             Cron.Minutely);
+
+            */
+
+            var myService = serviceProvider.GetRequiredService<IGuidService>();
+
+            recurringJobManager.AddOrUpdate("Esto correra cada 1 minuto",
+                                () => myService.GetRandomIdentifier(),
+                                Cron.Minutely);
         }
     }
 }
